@@ -14,12 +14,14 @@ import pt.blip.api.AlphaFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Path("/files")
 public class FileResource {
 
     @GET
-    @Path("{file}")
+    @Path("{file:.+}")
     @Produces(MediaType.APPLICATION_JSON)
     public AlphaFile read(@RestPath final String file) {
         final File readFile = new File(file);
@@ -36,9 +38,12 @@ public class FileResource {
     }
 
     @PUT
-    @Path("{file}")
+    @Path("{file:.+}")
     @Produces(MediaType.APPLICATION_JSON)
     public void write(@RestPath final String file, final String content) throws IOException {
+        java.nio.file.Path filePath = Paths.get(file);
+        Files.deleteIfExists(filePath.getParent());
+        Files.createDirectories(filePath.getParent());
         final File readFile = new File(file);
         FileUtils.writeStringToFile(readFile, content, "UTF-8");
     }
