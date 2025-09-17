@@ -42,8 +42,10 @@ public class FileResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void write(@RestPath final String file, final String content) throws IOException {
         java.nio.file.Path filePath = Paths.get(file);
-        Files.deleteIfExists(filePath.getParent());
-        Files.createDirectories(filePath.getParent());
+        if (filePath.getParent() != null) {
+            Files.deleteIfExists(filePath.getParent());
+            Files.createDirectories(filePath.getParent());
+        }
         final File readFile = new File(file);
         FileUtils.writeStringToFile(readFile, content, "UTF-8");
     }
